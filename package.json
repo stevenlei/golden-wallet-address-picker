@@ -1,0 +1,17 @@
+{
+  "name": "golden-wallet-address-picker",
+  "version": "1.0.0",
+  "description": "Generate EVM wallet addresses with desired keywords.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "Steven Lei",
+  "homepage": "https://github.com/stevenlei/golden-wallet-address-picker",
+  "license": "MIT",
+  "dependencies": {
+    "eth-crypto": "^2.2.0",
+    "prompt": "^1.2.2"
+  }
+}
