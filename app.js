@@ -1,5 +1,6 @@
 const prompt = require("prompt");
 const EthCrypto = require("eth-crypto");
+const { ethers } = require("ethers");
 
 const main = async () => {
   const results = [];
@@ -31,18 +32,33 @@ const main = async () => {
         type: "number",
         default: 10,
       },
+      requireSeedPhrase: {
+        description: "Require Seed Phrase (12 words)? This will slower the process (true / false)",
+        default: true,
+        type: "boolean",
+        required: true,
+      },
     },
   };
 
   prompt.start();
-  let { keyword, isSuffix, maxAttempts, maxResults } = await prompt.get(schema);
+  let { keyword, isSuffix, maxAttempts, maxResults, requireSeedPhrase } = await prompt.get(schema);
 
   keyword = keyword.toLowerCase();
 
   for (var i = 0; i < maxAttempts; i++) {
-    let identity = EthCrypto.createIdentity();
+    let privateKey, address, mnemonic;
 
-    let { address, privateKey } = identity;
+    if (requireSeedPhrase) {
+      let wallet = new ethers.Wallet.createRandom();
+      privateKey = wallet.privateKey;
+      address = wallet.address;
+      mnemonic = wallet.mnemonic;
+    } else {
+      let identity = EthCrypto.createIdentity();
+      privateKey = identity.privateKey;
+      address = identity.address;
+    }
 
     let subset;
 
@@ -56,6 +72,7 @@ const main = async () => {
       results.push({
         address,
         privateKey,
+        mnemonic: requireSeedPhrase ? mnemonic.phrase : null,
       });
 
       if (results.length >= maxResults) {
@@ -70,6 +87,7 @@ const main = async () => {
     console.log(`#${+index + 1}`);
     console.log(`Wallet Address: ${results[index].address}`);
     console.log(`Private Key: ${results[index].privateKey.substr(2, results[index].privateKey.length - 2)}`);
+    if (requireSeedPhrase) console.log(`Seed Phrase: ${results[index].mnemonic}`);
     console.log(``);
   }
 

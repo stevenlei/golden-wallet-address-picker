@@ -12,6 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "eth-crypto": "^2.2.0",
+    "ethers": "^5.6.0",
     "prompt": "^1.2.2"
   }
 }
